@@ -18,7 +18,7 @@
 
 ---
 
-## ✨ Features
+## <a id="features"></a>✨ Features
 
 - **🤖 Auto Detection** - Intelligently detects white margins by sampling content pages
 - **📤 Drag & Drop** - Simply drag your PDF file to upload
@@ -27,7 +27,7 @@
 - **💾 One-Click Export** - Download the cropped PDF instantly
 - **🔒 Privacy First** - All processing happens locally in your browser, no file upload to any server
 
-## 📸 Demo
+## <a id="demo"></a>📸 Demo
 
 ### Upload Interface
 
@@ -37,7 +37,7 @@
 
 ![Processing Preview](screenshots/preview.png)
 
-## 🚀 Usage
+## <a id="usage"></a>🚀 Usage
 
 1. Open `index.html` in your browser
 2. Drag & drop a PDF file (or click to select)
@@ -54,7 +54,7 @@
 | Canvas API | Margin detection via pixel analysis |
 | File System Access API | Native save dialog support |
 
-## 🧠 How It Works
+## <a id="how-it-works"></a>🧠 How It Works
 
 ### Smart Sampling Strategy
 
@@ -90,7 +90,7 @@ Uses `pdf-lib` to modify `CropBox` and `MediaBox` on all pages, which:
 | Firefox | ✅ | Works, fallback download method |
 | Safari | ✅ | Works, fallback download method |
 
-## 📄 License
+## <a id="license"></a>📄 License
 
 [MIT](LICENSE)
 
