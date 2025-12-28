@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF 白边裁剪器 - iPad Mini 阅读优化</title>
+    <meta name="description" content="在线裁剪 PDF 白边，让文档更适合在 iPad Mini 等小屏幕设备上阅读">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="9" y1="15" x2="15" y2="15"></line>
+                </svg>
+                <h1>PDF 白边裁剪器</h1>
+            </div>
+            <p class="tagline">让 PDF 更适合 iPad Mini 阅读</p>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Upload Section -->
+            <section id="upload-section" class="upload-section">
+                <div class="upload-area" id="upload-area">
+                    <div class="upload-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="17 8 12 3 7 8"></polyline>
+                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
+                    </div>
+                    <h2>拖拽 PDF 文件到此处</h2>
+                    <p>或点击选择文件</p>
+                    <input type="file" id="file-input" accept=".pdf" hidden>
+                </div>
+            </section>
+
+            <!-- Processing Section -->
+            <section id="processing-section" class="processing-section hidden">
+                <div class="file-info">
+                    <span class="file-name" id="file-name"></span>
+                    <span class="file-pages" id="file-pages"></span>
+                </div>
+
+                <!-- Progress -->
+                <div class="progress-container" id="progress-container">
+                    <div class="progress-text" id="progress-text">正在分析白边...</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill"></div>
+                    </div>
+                </div>
+
+                <!-- Controls -->
+                <div class="controls-panel" id="controls-panel">
+                    <h3>裁剪设置</h3>
+                    <div class="margin-controls">
+                        <div class="margin-group">
+                            <label>上边距</label>
+                            <div class="input-wrapper">
+                                <input type="number" id="margin-top" min="0" max="500" value="0">
+                                <span class="unit">px</span>
+                            </div>
+                        </div>
+                        <div class="margin-group">
+                            <label>下边距</label>
+                            <div class="input-wrapper">
+                                <input type="number" id="margin-bottom" min="0" max="500" value="0">
+                                <span class="unit">px</span>
+                            </div>
+                        </div>
+                        <div class="margin-group">
+                            <label>左边距</label>
+                            <div class="input-wrapper">
+                                <input type="number" id="margin-left" min="0" max="500" value="0">
+                                <span class="unit">px</span>
+                            </div>
+                        </div>
+                        <div class="margin-group">
+                            <label>右边距</label>
+                            <div class="input-wrapper">
+                                <input type="number" id="margin-right" min="0" max="500" value="0">
+                                <span class="unit">px</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="extra-controls">
+                        <div class="control-group">
+                            <label>额外边距保留</label>
+                            <div class="input-wrapper">
+                                <input type="number" id="extra-margin" min="0" max="50" value="15">
+                                <span class="unit">px</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-secondary" id="redetect-btn">重新检测</button>
+                </div>
+
+                <!-- Preview -->
+                <div class="preview-panel" id="preview-panel">
+                    <h3>预览对比</h3>
+                    <div class="preview-container">
+                        <div class="preview-box">
+                            <h4>原始</h4>
+                            <div class="preview-wrapper">
+                                <canvas id="preview-original"></canvas>
+                            </div>
+                        </div>
+                        <div class="preview-arrow">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                <polyline points="12 5 19 12 12 19"></polyline>
+                            </svg>
+                        </div>
+                        <div class="preview-box">
+                            <h4>裁剪后</h4>
+                            <div class="preview-wrapper">
+                                <canvas id="preview-cropped"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="preview-navigation">
+                        <button class="btn btn-icon" id="prev-page">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="15 18 9 12 15 6"></polyline>
+                            </svg>
+                        </button>
+                        <span class="page-indicator">
+                            <span id="current-page">1</span> / <span id="total-pages">1</span>
+                        </span>
+                        <button class="btn btn-icon" id="next-page">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="9 18 15 12 9 6"></polyline>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="actions-panel">
+                    <button class="btn btn-outline" id="reset-btn">重新选择文件</button>
+                    <button class="btn btn-primary" id="download-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        下载裁剪后的 PDF
+                    </button>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>所有处理均在本地完成，文件不会上传到服务器</p>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
